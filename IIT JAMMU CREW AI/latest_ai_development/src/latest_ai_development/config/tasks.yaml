@@ -1,0 +1,26 @@
+explain_topic_task:
+  description: >
+    Explain the given research topic in a simple yet comprehensive way.
+    Highlight key concepts, significance, and current trends.
+  expected_output: >
+    A 2-paragraph explanation of the research topic that is easy to understand.
+  agent: topic_explainer  # ✅ REQUIRED
+
+find_literature_task:
+  description: >
+    Search for the most relevant research papers on the given topic.
+    Summarize key findings and contributions from each paper.
+  expected_output: >
+    A list of at least 5 papers with a short summary for each, including
+    their key contributions.
+  agent: literature_finder  # ✅ REQUIRED
+
+analyze_gaps_task:
+  description: >
+    Based on the topic explanation and literature review, identify gaps in existing research.
+    Suggest possible research questions and an outline for a potential paper.
+  expected_output: >
+    A detailed list of at least 3 research gaps, with suggestions for research
+    questions and a paper outline.
+  agent: gap_analyzer  # ✅ REQUIRED
+  output_file: "output/report.md"
