@@ -1,0 +1,467 @@
+{
+  "name": "Project",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "7d982107-35cd-4641-9802-896d4c49b102",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -768,
+        48
+      ],
+      "id": "599cf4a7-96a9-46aa-91b4-54e216d5919c",
+      "name": "Webhook",
+      "webhookId": "7d982107-35cd-4641-9802-896d4c49b102"
+    },
+    {
+      "parameters": {
+        "resource": "spreadsheet",
+        "title": "News Letter subscribes",
+        "sheetsUi": {
+          "sheetValues": [
+            {
+              "title": "News Subs"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -672,
+        -192
+      ],
+      "id": "1fffa7e5-ab3f-4cfa-9703-79cf1cf53112",
+      "name": "Create spreadsheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "dtKKyqVtLQOlQhed",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://timesofindia.indiatimes.com/rssfeeds/-2128936835.cms",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.rssFeedRead",
+      "typeVersion": 1.2,
+      "position": [
+        -16,
+        48
+      ],
+      "id": "ae29ea67-00da-458f-a96e-07f40e32a65c",
+      "name": "RSS Read"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1jUlNg5b5Aa94zSEUtb9VENAHy2KxbMDJB-M7mtRBYi8",
+          "mode": "list",
+          "cachedResultName": "News Letter subscribes",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jUlNg5b5Aa94zSEUtb9VENAHy2KxbMDJB-M7mtRBYi8/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 478794791,
+          "mode": "list",
+          "cachedResultName": "News Subs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1jUlNg5b5Aa94zSEUtb9VENAHy2KxbMDJB-M7mtRBYi8/edit#gid=478794791"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ $json.body.name }}",
+            "Email": "={{ $json.body.email }}"
+          },
+          "matchingColumns": [
+            "Name"
+          ],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.6,
+      "position": [
+        -352,
+        48
+      ],
+      "id": "834e7011-7587-4c58-b735-afb51a560d3a",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "dtKKyqVtLQOlQhed",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -496,
+        496
+      ],
+      "id": "bb61b502-ae39-4c0b-80ff-baf4ea880a4e",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "72h3ciWmOA1pboEW",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Summarize these news letter in email format and make it point wise.{{ $json.content }} add here is content for this and now summarize it",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        -320,
+        336
+      ],
+      "id": "4de29c4a-9a9c-4b40-b0ed-8364bc26b192",
+      "name": "Summarize News"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        288,
+        0
+      ],
+      "id": "bf78d0be-e511-4108-b469-f5b3c921bf28",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "72h3ciWmOA1pboEW",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Your the ai which removes all the bad news and send postive news to user {{ $json.output }} this all the news now filter the things and get positve news out of this",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        112,
+        272
+      ],
+      "id": "d74b201a-1ef8-413b-bce8-ae4a669a0847",
+      "name": "Bad News Remover"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        608
+      ],
+      "id": "6ac13109-193f-4961-9e9c-63cd773459ae",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "72h3ciWmOA1pboEW",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "fieldsToMatchString": "output, output",
+        "joinMode": "keepEverything",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        592,
+        384
+      ],
+      "id": "0f1d0eb3-546c-45a1-9006-b0cc1a06f43b",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Webhook').item.json.body.email }}",
+        "subject": "Your AI news letter is there ",
+        "message": "={{ $json.output }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        960,
+        656
+      ],
+      "id": "780c76c6-ebbb-4bd3-a8b3-37d1e80836a8",
+      "name": "Send a message",
+      "webhookId": "70395b18-3ba2-4bc1-ad67-66b1e157b5a4",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "D7avbLGQXFcnmTsC",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.output }} now preapere a gmail body of daily news letter using all the output present there and summarize and make email body format pass it next node ",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        544,
+        656
+      ],
+      "id": "3e11523e-9fa3-4bea-9f46-dd8a1c38f8e9",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        224,
+        768
+      ],
+      "id": "a8f72654-8bba-441c-b6af-7e85cf512f82",
+      "name": "Google Gemini Chat Model3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "72h3ciWmOA1pboEW",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=this ai add his views in the following news things   {{ $json.output }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.1,
+      "position": [
+        112,
+        480
+      ],
+      "id": "8b6bbc28-8a7a-49fd-9b4a-48766a5dc12c",
+      "name": "Review AI"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create spreadsheet": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Append or update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "RSS Read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RSS Read": {
+      "main": [
+        [
+          {
+            "node": "Summarize News",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Summarize News",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Summarize News": {
+      "main": [
+        [
+          {
+            "node": "Review AI",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Bad News Remover",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Bad News Remover",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Review AI",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Bad News Remover": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Review AI": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "51e8b8b6-8129-4fe7-b177-23071cf0b0bd",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "a2434606ef9e84e79cf8c79e5de757a1ba24bad2e0e4eabe7803dd185278aa03"
+  },
+  "id": "qvhT0ShpWoPS2lxz",
+  "tags": []
+}
